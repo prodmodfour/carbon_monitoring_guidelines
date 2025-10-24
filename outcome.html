@@ -1,0 +1,15 @@
+<!doctype html><meta charset="utf-8">
+<title>Outcome</title>
+<div data-key="">You picked nothing.</div>
+<div data-key="a">You picked A.</div>
+<div data-key="b">You picked B.</div>
+<div data-key="c">You picked C.</div>
+<div data-key="a+b">A and B!</div>
+<!-- etc. -->
+
+<script>
+  const key = new URLSearchParams(location.search).get("sel") || "";
+  document.querySelectorAll("[data-key]").forEach(sec => {
+    sec.hidden = (sec.dataset.key !== key);
+  });
+</script>

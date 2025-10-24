@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Choose options</title>
+  <style>
+    body { font-family: ui-sans-serif, system-ui, sans-serif; margin: 2rem; }
+    fieldset { border: 1px solid #ccc; padding: 1rem; border-radius: .5rem; max-width: 28rem; }
+    label { display: block; margin: .35rem 0; }
+    button { margin-top: .75rem; padding: .5rem .9rem; }
+  </style>
+</head>
+<body>
+  <form id="chooser">
+    <fieldset>
+      <legend>Pick options</legend>
+      <label><input type="checkbox" name="a"> A</label>
+      <label><input type="checkbox" name="b"> B</label>
+      <label><input type="checkbox" name="c"> C</label>
+    </fieldset>
+    <button type="submit">Go</button>
+  </form>
+
+  <script>
+    // Map each combination to a page you’ve created in /outcomes/
+    const ROUTES = {
+      "":       "outcomes/none.html",
+      "a":      "outcomes/a.html",
+      "b":      "outcomes/b.html",
+      "c":      "outcomes/c.html",
+      "a+b":    "outcomes/a-b.html",
+      "a+c":    "outcomes/a-c.html",
+      "b+c":    "outcomes/b-c.html",
+      "a+b+c":  "outcomes/all.html"
+    };
+
+    // Optional: pre-check from URL (?sel=a+b) so links are shareable
+    const params = new URLSearchParams(location.search);
+    if (params.has("sel")) {
+      params.get("sel").split("+").filter(Boolean).forEach(name => {
+        const el = document.querySelector(`input[name="${name}"]`);
+        if (el) el.checked = true;
+      });
+    }
+
+    document.getElementById("chooser").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const sel = [...document.querySelectorAll('#chooser input[type="checkbox"]:checked')]
+        .map(i => i.name).sort().join("+"); // e.g. "a+b"
+      const next = ROUTES[sel] || ROUTES[""]; // fallback
+      // keep the selection in the URL for back/forward & sharing
+      const url = new URL(next, location.origin);
+      url.searchParams.set("sel", sel);
+      location.href = url.pathname + url.search; // relative path works on GitHub Pages
+    });
+  </script>
+</body>
+</html>
